@@ -1,5 +1,8 @@
 #[derive(Debug)]
 
+// Note: here is a nicer solution:
+// https://exercism.io/tracks/rust/exercises/high-scores/solutions/3bdcad2c40d8411f9ca7af0767c25f73
+
 pub struct HighScores {
     scores: Vec<u32>,
 }
