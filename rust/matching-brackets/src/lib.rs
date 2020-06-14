@@ -1,3 +1,9 @@
+// New idea:
+// 1. Go backwards, find first "left-wards-pointing" paren
+// 2. once found => go right and find corresponding closing tag
+// 3. repeat until string is empty
+//    if one of the steps fails: is unbalanced!
+
 pub fn brackets_are_balanced(string: &str) -> bool {
     // Remove all chars we do not want
     let chars: String = string
