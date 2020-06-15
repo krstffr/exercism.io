@@ -4,33 +4,59 @@
 // 3. repeat until string is empty
 //    if one of the steps fails: is unbalanced!
 
+// TODO: Could use a good chunk of cleanup!!
+
+fn is_left_facing(c: char) -> (bool, char) {
+    match c {
+        '{' => (true, '}'),
+        '[' => (true, ']'),
+        '(' => (true, ')'),
+        _ => (false, ' '),
+    }
+}
+
 pub fn brackets_are_balanced(string: &str) -> bool {
-    // Remove all chars we do not want
-    let chars: String = string
+    if string.len() < 2 {
+        return true;
+    }
+    let mut chars: String = string
         .chars()
         .filter(|x| ['[', ']', '(', ')', '{', '}'].contains(&x))
         .collect();
 
-    // Split in half..
-    let (start, end) = chars.split_at(string.len() / 2);
-    // ..reverse end half..
-    let end: String = end.chars().rev().collect();
-    // ..get iterators from start/end..
-    let mut end = end.chars();
-    let start = start.chars();
-    // ..and compare start end chars with each other!
-    let mut all_good = true;
-    for x in start {
-        let compare = end.next();
-        all_good = match x {
-            '[' => compare == Some(']'),
-            '(' => compare == Some(')'),
-            '{' => compare == Some('}'),
-            _ => false,
-        };
-        if !all_good {
-            break;
+    if chars.len() % 2 != 0 {
+        return false;
+    }
+    let mut pointer = chars.len() - 1;
+    let balanced: bool;
+    loop {
+        let c = chars.chars().nth(pointer).unwrap();
+        let (faces_left, find_right) = is_left_facing(c);
+        if faces_left {
+            let find_in = &chars[pointer..];
+            let pos = find_in.find(find_right);
+            match pos {
+                Some(pos) => {
+                    chars.remove(pos + pointer - 1);
+                    chars.remove(pointer);
+                    if pointer < 1 {
+                        balanced = true;
+                        break;
+                    }
+                    pointer -= 1;
+                }
+                _ => {
+                    balanced = false;
+                    break;
+                }
+            }
+        } else {
+            if pointer < 1 {
+                balanced = false;
+                break;
+            }
+            pointer -= 1;
         }
     }
-    all_good
+    balanced
 }
